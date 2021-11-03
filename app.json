@@ -1,5 +1,5 @@
 {
-  "name": "Uploader X Bot",
+  "name": "SL_Jana Url to File Uploader_Bot",
   "description": "Telegram Bot to Upload URLs to Telegram as File and Video.",
   "keywords": [
     "telegram",
@@ -14,9 +14,9 @@
     "remote",
     "uploader"
   ],
-  "success_url": "https://t.me/Uploader_X_bot",
-  "website": "https://github.com/Clinton-Abraham",
-  "repository": "https://github.com/Clinton-Abraham/UPLOADER-BOT",
+  "success_url": "http://t.me/SLJanaURLtoFileUploader_Bot",
+  "website": "https://t.me/SL_Jana_Team",
+  "repository": "https://t.me/SL_Jana_Team",
   "env": {
     "WEBHOOK": {
       "description": "Setting this to ANYTHING will enable webhooks when in env mode",

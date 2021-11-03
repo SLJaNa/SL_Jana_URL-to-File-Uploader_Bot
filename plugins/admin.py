@@ -1,5 +1,5 @@
 
-# (c) @AbirHasan2005 | Modifieded By : @DC4_WARRIOR
+# (c) @SL_Jana_Team |SL_Jana_Team |
 
 import traceback
 import os

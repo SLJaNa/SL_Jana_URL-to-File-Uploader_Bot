@@ -1,5 +1,5 @@
 
-# (c) @AbirHasan2005 | X-Noid
+# (c) @SL_Jana_Team |SL_Jana_Team
 
 import traceback, datetime, asyncio, string, random, time, os, aiofiles, aiofiles.os
 from database.access import clinton

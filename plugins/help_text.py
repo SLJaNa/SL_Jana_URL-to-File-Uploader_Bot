@@ -47,13 +47,11 @@ async def help_user(bot, update):
     )
     
     
- @Clinton.on_message(filters.private & filters.command(["about"]))
-async def about_user(bot, update):
-    # logger.info(update)
-    await AddUser(bot, update)
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.ABOUT_USER.format(update.from_user.mention),
+@Clinton.on_message(filters.private & filters.command(["about"]))
+async def start(bot, update):
+    await update.reply_text(
+        text=ABOUT_USER.format(update.from_user.mention),
+        disable_web_page_preview=True,
       reply_markup=InlineKeyboardMarkup([
         [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],

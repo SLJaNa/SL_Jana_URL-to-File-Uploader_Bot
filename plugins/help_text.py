@@ -1,124 +1,255 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-# (c) SL_Jana_Team
+# © @SL_Jana_Team [ Telegram ]
 
-# the logging things
-import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
-
-import os
-import sqlite3
-
-# the secret configuration specific things
-if bool(os.environ.get("WEBHOOK", False)):
-    from sample_config import Config
-else:
-    from config import Config
-
-# the Strings used for this "thing"
-from translation import Translation
-
+from WebStreamer.bot import StreamBot
+from WebStreamer.vars import Var
+from WebStreamer.utils.human_readable import humanbytes
+from WebStreamer.utils.database import Database
 from pyrogram import filters
-from database.adduser import AddUser
-from pyrogram import Client as Clinton
-logging.getLogger("pyrogram").setLevel(logging.WARNING)
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant
+db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
 
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+START_TEXT = """
+<i>👋 Hᴇʏ,</i>{}\n
+<i>I'ᴍ Tᴇʟᴇɢʀᴀᴍ Fɪʟᴇs Sᴛʀᴇᴀᴍɪɴɢ Bᴏᴛ ᴀs ᴡᴇʟʟ Dɪʀᴇᴄᴛ Lɪɴᴋs Gᴇɴᴇʀᴀᴛᴇ</i>\n
+<i>Cʟɪᴄᴋ ᴏɴ /help ᴛᴏ ɢᴇᴛ ᴍᴏʀᴇ ɪɴғᴏʀᴍᴀᴛɪᴏɴ</i>\n
+<i><u>𝗪𝗔𝗥𝗡𝗜𝗡𝗚 🚸</u></i>
+<b>🔞 Pʀᴏɴ ᴄᴏɴᴛᴇɴᴛꜱ ʟᴇᴀᴅꜱ ᴛᴏ ᴘᴇʀᴍᴀɴᴇɴᴛ ʙᴀɴ ʏᴏᴜ.</b>\n\n
+<i><b>🍃 Bᴏᴛ Mᴀɪɴᴛᴀɪɴᴇᴅ Bʏ :</b>@SL_Jana_Team</i>"""
 
+HELP_TEXT = """
+<i>- Sᴇɴᴅ ᴍᴇ ᴀɴʏ ꜰɪʟᴇ (ᴏʀ) ᴍᴇᴅɪᴀ ꜰʀᴏᴍ ᴛᴇʟᴇɢʀᴀᴍ.</i>
+<i>- I ᴡɪʟʟ ᴘʀᴏᴠɪᴅᴇ ᴇxᴛᴇʀɴᴀʟ ᴅɪʀᴇᴄᴛ ᴅᴏᴡɴʟᴏᴀᴅ ʟɪɴᴋ !.</i>
+<i>- Aᴅᴅ Mᴇ ɪɴ ʏᴏᴜʀ Cʜᴀɴɴᴇʟ Fᴏʀ Dɪʀᴇᴄᴛ Dᴏᴡɴʟᴏᴀᴅ Lɪɴᴋs Bᴜᴛᴛᴏɴ</i>
+<i>- Tʜɪs Pᴇʀᴍᴇᴀɴᴛ Lɪɴᴋ Wɪᴛʜ Fᴀsᴛᴇsᴛ Sᴘᴇᴇᴅ</i>\n
+<u>🔸 𝗪𝗔𝗥𝗡𝗜𝗡𝗚 🚸</u>\n
+<b>🔞 Pʀᴏɴ ᴄᴏɴᴛᴇɴᴛꜱ ʟᴇᴀᴅꜱ ᴛᴏ ᴘᴇʀᴍᴀɴᴇɴᴛ ʙᴀɴ ʏᴏᴜ.</b>\n
+<i>Cᴏɴᴛᴀᴄᴛ ᴅᴇᴠᴇʟᴏᴘᴇʀ (ᴏʀ) ʀᴇᴘᴏʀᴛ ʙᴜɢꜱ</i> <b>: <a href='https://t.me/SL_Jana_Team'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>"""
 
-HELP_BOTTONS=InlineKeyboardMarkup([
-        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
-        [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
-        [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")],
-         ])
+ABOUT_TEXT = """
+<b>⚜ Mʏ ɴᴀᴍᴇ : 𝙎𝙇_𝙅𝙖𝙣𝙖_𝙁𝙞𝙡𝙚 𝙩𝙤 𝙐𝙍𝙇 𝙐𝙥𝙡𝙤𝙖𝙙𝙚𝙧_𝘽𝙤𝙩</b>\n
+<b>🔸Vᴇʀꜱɪᴏɴ : <a href='https://t.me/SL_Jana_Team'>3.0.1</a></b>\n
+<b>🔹Sᴏᴜʀᴄᴇ : <a href='https://github.com/SLJaNa/SL_Jana_File-to-URL-Uploader_Bot'>𝘾ʟɪᴄᴋ 𝙃ᴇʀᴇ</a></b>\n
+<b>🔸GitHub : <a href='https://github.com/SLJaNa'>𝙁ᴏʟʟᴏᴡ</a></b>\n
+<b>🔹Dᴇᴠᴇʟᴏᴘᴇʀ : <a href='https://t.me/SL_Jana_Team'>𝙎𝙇_𝙅𝙖𝙣𝙖_𝙏𝙚𝙖𝙢</a></b>\n
+<b>🔸Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ : <a href='https://t.me/SL_Jana_Team'>[ 11-ᴊᴜʟʏ-21 ] 04:35 PM</a></b>"""
 
-ABOUT_BUTTONS=InlineKeyboardMarkup([
-        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
-        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],
+START_BUTTONS = InlineKeyboardMarkup([
+        
+        [InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
+        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
+        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')],
         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
-        [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
-        [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
+        [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")]         
+])
+HELP_BUTTONS = InlineKeyboardMarkup([
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
+        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
+        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')],
+        [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
+        [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")]
+         ])
+ABOUT_BUTTONS = InlineKeyboardMarkup([
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
+        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
+        InlineKeyboardButton('Cʟᴏsᴇ', callback_data='close')],
+        [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
+        [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")]
      ])
 
-START_BUTTONS=InlineKeyboardMarkup([
-         [InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
-          InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
-         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
-         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
-         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
-                    ])
-
-    @Clinton.on_callback_query()
+@StreamBot.on_callback_query()
 async def cb_data(bot, update):
     if update.data == "home":
         await update.message.edit_text(
-            text=Translation.START_TEXT.format(update.from_user.mention),
+            text=START_TEXT.format(update.from_user.mention),
             disable_web_page_preview=True,
             reply_markup=START_BUTTONS
         )
     elif update.data == "help":
         await update.message.edit_text(
-            text=Translation.HELP_USER,
+            text=HELP_TEXT,
             disable_web_page_preview=True,
             reply_markup=HELP_BUTTONS
         )
     elif update.data == "about":
         await update.message.edit_text(
-            text=Translation.ABOUT_USER,
+            text=ABOUT_TEXT,
             disable_web_page_preview=True,
             reply_markup=ABOUT_BUTTONS
         )
     else:
         await update.message.delete()
-        
-        
-        
 
 
-@Clinton.on_message(filters.private & filters.command(["help"]))
-async def help_user(bot, update):
-    # logger.info(update)
-    await AddUser(bot, update)
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.HELP_USER,
-        parse_mode="html",
-        disable_web_page_preview=True,
-      reply_markup=HELP_BOTTONS,
-        reply_to_message_id=update.message_id
-    )
-    
-    
-@Clinton.on_message(filters.private & filters.command(["about"]))
+@StreamBot.on_message(filters.command('start') & filters.private & ~filters.edited)
+async def start(b, m):
+    if not await db.is_user_exist(m.from_user.id):
+        await db.add_user(m.from_user.id)
+        await b.send_message(
+            Var.BIN_CHANNEL,
+            f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ:** \n\n__❣️Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{m.from_user.first_name}](tg://user?id={m.from_user.id}) __Sᴛᴀʀᴛᴇᴅ Yᴏᴜʀ Bᴏᴛ !!__"
+        )
+    usr_cmd = m.text.split("_")[-1]
+    if usr_cmd == "/start":
+        if Var.UPDATES_CHANNEL != "None":
+            try:
+                user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+                if user.status == "kicked":
+                    await b.send_message(
+                        chat_id=m.chat.id,
+                        text="__💔Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ. Cᴏɴᴛᴀᴄᴛ ᴛʜᴇ Dᴇᴠᴇʟᴏᴘᴇʀ__\n\n @SL_Jana_Team **Tʜᴇʏ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ**",
+                        parse_mode="markdown",
+                        disable_web_page_preview=True
+                    )
+                    return
+            except UserNotParticipant:
+                await b.send_message(
+                    chat_id=m.chat.id,
+                    text="<i>Jᴏɪɴ ᴍʏ ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴍᴇ 🔐</i>",
+                    reply_markup=InlineKeyboardMarkup(
+                        [[
+                            InlineKeyboardButton("Jᴏɪɴ ɴᴏᴡ 🔓", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
+                            ]]
+                    ),
+                    parse_mode="HTML"
+                )
+                return
+            except Exception:
+                await b.send_message(
+                    chat_id=m.chat.id,
+                    text="<i>❌Sᴏᴍᴇᴛʜɪɴɢ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ ᴍʏ ᴅᴇᴠᴇʟᴏᴘᴇʀ</i> <b><a href='https://t.me/SL_Jana_Team'>[ ᴄʟɪᴄᴋ ʜᴇʀᴇ ]</a></b>",
+                    parse_mode="HTML",
+                    disable_web_page_preview=True)
+                return
+        await m.reply_text(
+            text=START_TEXT.format(m.from_user.mention),
+            parse_mode="HTML",
+            disable_web_page_preview=True,
+            reply_markup=START_BUTTONS
+              )                                                                         
+                                                                                       
+                                                                            
+    else:
+        if Var.UPDATES_CHANNEL != "None":
+            try:
+                user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+                if user.status == "kicked":
+                    await b.send_message(
+                        chat_id=m.chat.id,
+                        text="**💔Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ. Qᴜɪᴄᴋʟʏ ᴄᴏɴᴛᴀᴄᴛ** @SL_Jana_Team",
+                        parse_mode="markdown",
+                        disable_web_page_preview=True
+                    )
+                    return
+            except UserNotParticipant:
+                await b.send_message(
+                    chat_id=m.chat.id,
+                    text="**Pʟᴇᴀsᴇ Jᴏɪɴ Mʏ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴛʜɪs Bᴏᴛ**!\n\n**Dᴜᴇ ᴛᴏ Oᴠᴇʀʟᴏᴀᴅ, Oɴʟʏ Cʜᴀɴɴᴇʟ Sᴜʙsᴄʀɪʙᴇʀs ᴄᴀɴ ᴜsᴇ ᴛʜᴇ Bᴏᴛ**!",
+                    reply_markup=InlineKeyboardMarkup(
+                        [[
+                          InlineKeyboardButton("🤖 Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
+                            ]]
+                    ),
+                    parse_mode="markdown"
+                )
+                return
+            except Exception:
+                await b.send_message(
+                    chat_id=m.chat.id,
+                    text="**❌Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ** [𝙎𝙇_𝙅𝙖𝙣𝙖_𝙏𝙚𝙖𝙢](https://t.me/SL_Jana_Team).",
+                    parse_mode="markdown",
+                    disable_web_page_preview=True)
+                return
+
+        get_msg = await b.get_messages(chat_id=Var.BIN_CHANNEL, message_ids=int(usr_cmd))
+
+        file_size = None
+        if get_msg.video:
+            file_size = f"{humanbytes(get_msg.video.file_size)}"
+        elif get_msg.document:
+            file_size = f"{humanbytes(get_msg.document.file_size)}"
+        elif get_msg.audio:
+            file_size = f"{humanbytes(get_msg.audio.file_size)}"
+
+        file_name = None
+        if get_msg.video:
+            file_name = f"{get_msg.video.file_name}"
+        elif get_msg.document:
+            file_name = f"{get_msg.document.file_name}"
+        elif get_msg.audio:
+            file_name = f"{get_msg.audio.file_name}"
+
+        stream_link = "https://{}/{}".format(Var.FQDN, get_msg.message_id) if Var.ON_HEROKU or Var.NO_PORT else \
+            "http://{}:{}/{}".format(Var.FQDN,
+                                     Var.PORT,
+                                     get_msg.message_id)
+
+        msg_text ="""
+<i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>\n
+<b>📂 Fɪʟᴇ ɴᴀᴍᴇ :</b> <i>{}</i>\n
+<b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <i>{}</i>\n
+<b>📥 Dᴏᴡɴʟᴏᴀᴅ :</b> <i>{}</i>\n
+<b>🚸 Nᴏᴛᴇ : Lɪɴᴋ ᴇxᴘɪʀᴇᴅ ɪɴ 24 ʜᴏᴜʀꜱ</b>\n
+<i>🍃 Bᴏᴛ Mᴀɪɴᴛᴀɪɴᴇᴅ Bʏ :</i> <b>@SL_Jana_Team</b>
+"""
+
+        await m.reply_text(
+            text=msg_text.format(file_name, file_size, stream_link),
+            parse_mode="HTML",
+            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Dᴏᴡɴʟᴏᴀᴅ ɴᴏᴡ 📥", url=stream_link)]])
+        )
+
+
+@StreamBot.on_message(filters.private & filters.command(["about"]))
 async def start(bot, update):
     await update.reply_text(
-        text=Translation.ABOUT_USER.format(update.from_user.mention),
+        text=ABOUT_TEXT.format(update.from_user.mention),
         disable_web_page_preview=True,
-      reply_markup=ABOUT_BUTTONS,
-        reply_to_message_id=update.message_id
+        reply_markup=ABOUT_BUTTONS
     )
 
-@Clinton.on_message(filters.private & filters.command(["start"]))
-async def start(bot, update):
-    # logger.info(update)
-    await AddUser(bot, update)
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.START_TEXT.format(update.from_user.mention),
-        reply_markup=START_BUTTONS,
-               reply_to_message_id=update.message_id
-    )
-    
-    
-    
-    
 
-    
-   
-                
-            
-        
-    
+@StreamBot.on_message(filters.command('help') & filters.private & ~filters.edited)
+async def help_handler(bot, message):
+    if not await db.is_user_exist(message.from_user.id):
+        await db.add_user(message.from_user.id)
+        await bot.send_message(
+            Var.BIN_CHANNEL,
+            f"**Nᴇᴡ Usᴇʀ Jᴏɪɴᴇᴅ **\n\n__❣️Mʏ Nᴇᴡ Fʀɪᴇɴᴅ__ [{message.from_user.first_name}](tg://user?id={message.from_user.id}) __Started Your Bot !!__"
+        )
+    if Var.UPDATES_CHANNEL is not None:
+        try:
+            user = await bot.get_chat_member(Var.UPDATES_CHANNEL, message.chat.id)
+            if user.status == "kicked":
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text="<i>💔Sᴏʀʀʏ Sɪʀ, Yᴏᴜ ᴀʀᴇ Bᴀɴɴᴇᴅ ᴛᴏ ᴜsᴇ ᴍᴇ. Cᴏɴᴛᴀᴄᴛ ᴛʜᴇ Dᴇᴠᴇʟᴏᴘᴇʀ__\n\n @SL_Jana_Team **Tʜᴇʏ Wɪʟʟ Hᴇʟᴘ Yᴏᴜ**</i>",
+                    parse_mode="HTML",
+                    disable_web_page_preview=True
+                )
+                return
+        except UserNotParticipant:
+            await bot.send_message(
+                chat_id=message.chat.id,
+                text="**Pʟᴇᴀsᴇ Jᴏɪɴ Mʏ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ ᴛᴏ ᴜsᴇ ᴛʜɪs Bᴏᴛ!**\n\n__Dᴜᴇ ᴛᴏ Oᴠᴇʀʟᴏᴀᴅ, Oɴʟʏ Cʜᴀɴɴᴇʟ Sᴜʙsᴄʀɪʙᴇʀs ᴄᴀɴ ᴜsᴇ ᴛʜᴇ Bᴏᴛ!__",
+                reply_markup=InlineKeyboardMarkup(
+                    [[
+                        InlineKeyboardButton("🤖 Jᴏɪɴ Uᴘᴅᴀᴛᴇs Cʜᴀɴɴᴇʟ", url=f"https://t.me/{Var.UPDATES_CHANNEL}")
+                        ]]
+                ),
+                parse_mode="markdown"
+            )
+            return
+        except Exception:
+            await bot.send_message(
+                chat_id=message.chat.id,
+                text="__❌Sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ Wʀᴏɴɢ. Cᴏɴᴛᴀᴄᴛ ᴍᴇ__ [𝙎𝙇_𝙅𝙖𝙣𝙖_𝙏𝙚𝙖𝙢](https://t.me/SL_Jana_Team).",
+                parse_mode="markdown",
+                disable_web_page_preview=True)
+            return
+    await message.reply_text(
+        text=HELP_TEXT,
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+        reply_markup=HELP_BUTTONS
+        )

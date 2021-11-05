@@ -63,12 +63,12 @@ async def start(bot, update):
                reply_to_message_id=update.message_id)
     
     @Clinton.on_message(filters.private & filters.command(["about"]))
-async def about_text(bot, update):
+async def about_user(bot, update):
     # logger.info(update)
     await AddUser(bot, update)
     await bot.send_message(
         chat_id=update.chat.id,
-        text=Translation.ABOUT_TEXT.format(update.from_user.mention),
+        text=Translation.ABOUT_USER.format(update.from_user.mention),
       reply_markup=InlineKeyboardMarkup([
         [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],

@@ -1,13 +1,29 @@
 # © @SL_Jana_Team [ Telegram ]
 
-from WebStreamer.bot import StreamBot
-from WebStreamer.vars import Var
-from WebStreamer.utils.human_readable import humanbytes
-from WebStreamer.utils.database import Database
+# the logging things
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+import os
+import sqlite3
+
+# the secret configuration specific things
+if bool(os.environ.get("WEBHOOK", False)):
+    from sample_config import Config
+else:
+    from config import Config
+
+# the Strings used for this "thing"
+from translation import Translation
+
 from pyrogram import filters
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from pyrogram.errors import UserNotParticipant
-db = Database(Var.DATABASE_URL, Var.SESSION_NAME)
+from database.adduser import AddUser
+from pyrogram import Client as Clinton
+logging.getLogger("pyrogram").setLevel(logging.WARNING)
+
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 START_TEXT = """
 <i>👋 Hᴇʏ,</i>{}\n
@@ -57,7 +73,7 @@ ABOUT_BUTTONS = InlineKeyboardMarkup([
         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")]
      ])
 
-@StreamBot.on_callback_query()
+@Clinton.on_callback_query()
 async def cb_data(bot, update):
     if update.data == "home":
         await update.message.edit_text(
@@ -81,7 +97,7 @@ async def cb_data(bot, update):
         await update.message.delete()
 
 
-@StreamBot.on_message(filters.command('start') & filters.private & ~filters.edited)
+@Clinton.on_message(filters.command('start') & filters.private & ~filters.edited)
 async def start(b, m):
     if not await db.is_user_exist(m.from_user.id):
         await db.add_user(m.from_user.id)
@@ -200,7 +216,7 @@ async def start(b, m):
         )
 
 
-@StreamBot.on_message(filters.private & filters.command(["about"]))
+@Clinton.on_message(filters.private & filters.command(["about"]))
 async def start(bot, update):
     await update.reply_text(
         text=ABOUT_TEXT.format(update.from_user.mention),
@@ -209,7 +225,7 @@ async def start(bot, update):
     )
 
 
-@StreamBot.on_message(filters.command('help') & filters.private & ~filters.edited)
+@Clinton.on_message(filters.command('help') & filters.private & ~filters.edited)
 async def help_handler(bot, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id)

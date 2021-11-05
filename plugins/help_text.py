@@ -38,7 +38,7 @@ async def help_user(bot, update):
         parse_mode="html",
         disable_web_page_preview=True,
       reply_markup=InlineKeyboardMarkup([
-        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
         InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
         [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")],
@@ -50,10 +50,10 @@ async def help_user(bot, update):
 @Clinton.on_message(filters.private & filters.command(["about"]))
 async def start(bot, update):
     await update.reply_text(
-        text=ABOUT_USER.format(update.from_user.mention),
+        text=Translation.ABOUT_USER.format(update.from_user.mention),
         disable_web_page_preview=True,
       reply_markup=InlineKeyboardMarkup([
-        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],
         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
@@ -79,6 +79,33 @@ async def start(bot, update):
                     ]),
                reply_to_message_id=update.message_id
     )
+    
+    
+    
+    
+    @Clinton.on_callback_query()
+async def cb_data(bot, update):
+    if update.data == "home":
+        await update.message.edit_text(
+            text=Translation.START_TEXT.format(update.from_user.mention),
+            disable_web_page_preview=True,
+            reply_markup=START_BUTTONS
+        )
+    elif update.data == "help":
+        await update.message.edit_text(
+            text=Translation.HELP_USER,
+            disable_web_page_preview=True,
+            reply_markup=HELP_BUTTONS
+        )
+    elif update.data == "about":
+        await update.message.edit_text(
+            text=Translation.ABOUT_USER,
+            disable_web_page_preview=True,
+            reply_markup=ABOUT_BUTTONS
+        )
+    else:
+        await update.message.delete()
+
     
    
                 

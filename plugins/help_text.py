@@ -41,8 +41,8 @@ async def help_user(bot, update):
         [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
         InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
         [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
-        [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")]
-         ])
+        [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")],
+         ]),
         reply_to_message_id=update.message_id)
 
 
@@ -58,7 +58,7 @@ async def start(bot, update):
           InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
          [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
          [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
-         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
+         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
                     ]),
                reply_to_message_id=update.message_id)
     
@@ -74,8 +74,8 @@ async def start(bot, update):
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],
         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
-        [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
-     ])
+        [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
+     ]),
                
         reply_to_message_id=update.message_id)
                 

@@ -28,61 +28,30 @@ logging.getLogger("pyrogram").setLevel(logging.WARNING)
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-@Clinton.on_message(filters.private & filters.command(["help"]))
-async def help_user(bot, update):
-    # logger.info(update)
-    await AddUser(bot, update)
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.HELP_USER,
-        parse_mode="html",
-        disable_web_page_preview=True,
-      reply_markup=InlineKeyboardMarkup([
+HELP_BOTTONS=InlineKeyboardMarkup([
         [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
         InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
         [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")],
-         ]),
-        reply_to_message_id=update.message_id
-    )
-    
-    
-@Clinton.on_message(filters.private & filters.command(["about"]))
-async def start(bot, update):
-    await update.reply_text(
-        text=Translation.ABOUT_USER.format(update.from_user.mention),
-        disable_web_page_preview=True,
-      reply_markup=InlineKeyboardMarkup([
+         ])
+
+ABOUT_BUTTONS=InlineKeyboardMarkup([
         [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='home'),
         InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],
         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
-     ]),
-               
-        reply_to_message_id=update.message_id
-    )
+     ])
 
-@Clinton.on_message(filters.private & filters.command(["start"]))
-async def start(bot, update):
-    # logger.info(update)
-    await AddUser(bot, update)
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.START_TEXT.format(update.from_user.mention),
-        reply_markup=InlineKeyboardMarkup([
+START_BUTTONS=InlineKeyboardMarkup([
          [InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
           InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
          [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
          [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
          [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
-                    ]),
-               reply_to_message_id=update.message_id
-    )
-    
-    
-    
-    
+                    ])
+
+
     @Clinton.on_callback_query()
 async def cb_data(bot, update):
     if update.data == "home":
@@ -105,6 +74,48 @@ async def cb_data(bot, update):
         )
     else:
         await update.message.delete()
+        
+        
+        
+
+
+@Clinton.on_message(filters.private & filters.command(["help"]))
+async def help_user(bot, update):
+    # logger.info(update)
+    await AddUser(bot, update)
+    await bot.send_message(
+        chat_id=update.chat.id,
+        text=Translation.HELP_USER,
+        parse_mode="html",
+        disable_web_page_preview=True,
+      reply_markup=HELP_BOTTONS,
+        reply_to_message_id=update.message_id
+    )
+    
+    
+@Clinton.on_message(filters.private & filters.command(["about"]))
+async def start(bot, update):
+    await update.reply_text(
+        text=Translation.ABOUT_USER.format(update.from_user.mention),
+        disable_web_page_preview=True,
+      reply_markup=ABOUT_BUTTONS,
+        reply_to_message_id=update.message_id
+    )
+
+@Clinton.on_message(filters.private & filters.command(["start"]))
+async def start(bot, update):
+    # logger.info(update)
+    await AddUser(bot, update)
+    await bot.send_message(
+        chat_id=update.chat.id,
+        text=Translation.START_TEXT.format(update.from_user.mention),
+        reply_markup=START_BUTTONS,
+               reply_to_message_id=update.message_id
+    )
+    
+    
+    
+    
 
     
    

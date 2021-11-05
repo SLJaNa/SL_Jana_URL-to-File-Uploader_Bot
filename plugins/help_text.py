@@ -51,8 +51,7 @@ START_BUTTONS=InlineKeyboardMarkup([
          [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
                     ])
 
-
-    @Clinton.on_callback_query()
+    @Clinton.on_callback_query(filters.private & filters.command([]))
 async def cb_data(bot, update):
     if update.data == "home":
         await update.message.edit_text(

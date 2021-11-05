@@ -31,13 +31,7 @@ URL | filename | username | password"""
    File   - Give File without Screenshots
 
 If bot didn't respond, contact @SL_Jana_Team"""
-    ABOUT_USER = """
-<b>⚜ Mʏ ɴᴀᴍᴇ : 𝙎𝙇_𝙅𝙖𝙣𝙖_𝙐𝙍𝙇 𝙩𝙤 𝙁𝙞𝙡𝙚 𝙐𝙥𝙡𝙤𝙖𝙙𝙚𝙧_𝘽𝙤𝙩</b>\n
-<b>🔸Vᴇʀꜱɪᴏɴ : <a href='https://t.me/SL_Jana_Team'>3.0.1</a></b>\n
-<b>🔹Sᴏᴜʀᴄᴇ : <a href='https://github.com/SLJaNa/SL_Jana_URL-to-File-Uploader_Bot'>𝘾ʟɪᴄᴋ 𝙃ᴇʀᴇ</a></b>\n
-<b>🔸GitHub : <a href='https://github.com/SLJaNa'>𝙁ᴏʟʟᴏᴡ</a></b>\n
-<b>🔹Dᴇᴠᴇʟᴏᴘᴇʀ : <a href='https://t.me/SL_Jana_Team'>𝙎𝙇_𝙅𝙖𝙣𝙖_𝙏𝙚𝙖𝙢</a></b>\n
-<b>🔸Lᴀꜱᴛ ᴜᴘᴅᴀᴛᴇᴅ : <a href='https://t.me/SL_Jana_Team'>[ 11-ᴊᴜʟʏ-21 ] 04:35 PM</a></b>"""
+    
     REPLY_TO_MEDIA_ALBUM_TO_GEN_THUMB = "Reply /generatecustomthumbnail to a media album, to generate custom thumbail"
     ERR_ONLY_TWO_MEDIA_IN_ALBUM = """Media Album should contain only two photos. Please re-send the media album, and then try again, or send only two photos in an album."
 You can use /rename command after receiving file to rename it with custom thumbnail support.

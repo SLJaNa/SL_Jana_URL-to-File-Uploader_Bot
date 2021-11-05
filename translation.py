@@ -31,7 +31,7 @@ URL | filename | username | password"""
    File   - Give File without Screenshots
 
 If bot didn't respond, contact @SL_Jana_Team"""
-    ABOUT_TEXT = """
+    ABOUT_USER = """
 <b>⚜ Mʏ ɴᴀᴍᴇ : 𝙎𝙇_𝙅𝙖𝙣𝙖_𝙐𝙍𝙇 𝙩𝙤 𝙁𝙞𝙡𝙚 𝙐𝙥𝙡𝙤𝙖𝙙𝙚𝙧_𝘽𝙤𝙩</b>\n
 <b>🔸Vᴇʀꜱɪᴏɴ : <a href='https://t.me/SL_Jana_Team'>3.0.1</a></b>\n
 <b>🔹Sᴏᴜʀᴄᴇ : <a href='https://github.com/SLJaNa/SL_Jana_URL-to-File-Uploader_Bot'>𝘾ʟɪᴄᴋ 𝙃ᴇʀᴇ</a></b>\n

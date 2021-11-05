@@ -37,6 +37,12 @@ async def help_user(bot, update):
         text=Translation.HELP_USER,
         parse_mode="html",
         disable_web_page_preview=True,
+      reply_markup=InlineKeyboardMarkup([
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
+        [InlineKeyboardButton("⚡ Telegram Sup 🗯", url="https://t.me/SL_Jana_Team")],
+        [InlineKeyboardButton("🗂️ Report Bugs 🚨", url="https://t.me/SL_Jana_Team")]
+         ])
         reply_to_message_id=update.message_id)
 
 
@@ -48,9 +54,11 @@ async def start(bot, update):
         chat_id=update.chat.id,
         text=Translation.START_TEXT.format(update.from_user.mention),
         reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("Source code ⚡", url="https://t.me/SL_Jana_Team"),
-                    InlineKeyboardButton("Project Channel 👨🏻‍💻", url="https://t.me/SL_Jana_Team")],
-                    [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
+         [InlineKeyboardButton('Hᴇʟᴘ', callback_data='help'),
+          InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')],
+         [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
+         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
+         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
                     ]),
                reply_to_message_id=update.message_id)
     
@@ -60,12 +68,14 @@ async def start(bot, update):
     await AddUser(bot, update)
     await bot.send_message(
         chat_id=update.chat.id,
-        text=Translation.START_TEXT.format(update.from_user.mention),
+        text=Translation.ABOUT_TEXT.format(update.from_user.mention),
       reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("Source code ⚡", url="https://t.me/SL_Jana_Team"),
-                    InlineKeyboardButton("Project Channel 👨🏻‍💻", url="https://t.me/SL_Jana_Team")],
-                    [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
-                    ]),
+        [InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start'),
+        InlineKeyboardButton('Hᴇʟᴘ', callback_data='help')],
+        [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
+        [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
+        [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")]
+     ])
                
         reply_to_message_id=update.message_id)
                 

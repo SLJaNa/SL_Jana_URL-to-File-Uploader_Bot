@@ -54,6 +54,7 @@ async def start(bot, update):
         chat_id=update.chat.id,
         text=Translation.START_TEXT.format(update.from_user.mention),
         reply_markup=InlineKeyboardMarkup([
+          [InlineKeyboardButton(<a href='https://github.com/SLJaNa/SL_Jana_File-to-URL-Uploader_Bot'>"Help"</a>)],
       [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team")],
         [InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
          [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],

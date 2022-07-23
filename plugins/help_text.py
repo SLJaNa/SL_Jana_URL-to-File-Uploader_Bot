@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# (c) Shrimadhav U K
+# (c) SL_Jana_Team
 
 # the logging things
 import logging
@@ -37,6 +37,11 @@ async def help_user(bot, update):
         text=Translation.HELP_USER,
         parse_mode="html",
         disable_web_page_preview=True,
+       reply_markup=InlineKeyboardMarkup([
+      [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team"),
+        InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
+         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
+         ]),
         reply_to_message_id=update.message_id
     )
 
@@ -48,16 +53,10 @@ async def start(bot, update):
     await bot.send_message(
         chat_id=update.chat.id,
         text=Translation.START_TEXT.format(update.from_user.mention),
-        reply_markup=InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton(
-                        "Source code ⚡", url="https://github.com/Clinton-Abraham/UPLOADER-BOT"
-                    ),
-                    InlineKeyboardButton("Project Channel 👨🏻‍💻", url="https://t.me/Space_X_bots"),
-                ],
-                [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/clinton_abraham_bot")],
-            ]
-        ),
+        reply_markup=InlineKeyboardMarkup([
+      [InlineKeyboardButton("📌️ Telegram Channel 🔎", url="https://t.me/SL_Jana_Team"),
+        InlineKeyboardButton("📌️ Telegram Group 🔎", url="https://t.me/joinchat/YiGR_JLyIG84ZmY1")],
+         [InlineKeyboardButton("Developer 👨‍⚖️", url="https://t.me/SL_Jana_Team")],
+         ]),
         reply_to_message_id=update.message_id
     )
